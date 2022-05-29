@@ -3,7 +3,7 @@ import router from "./router";
 
 const axiosInstance = axios.create({ baseURL: "http://localhost:8080" });
 axiosInstance.defaults.withCredentials = true;
-axiosInstance.interceptors.request.use(function (request) {
+axiosInstance.interceptors.request.use((request) => {
   if (request.url == "/user/signup") {
     request.withCredentials = false;
   }
@@ -11,14 +11,14 @@ axiosInstance.interceptors.request.use(function (request) {
 });
 
 axiosInstance.interceptors.response.use(
-  function (response) {
+  (response) => {
     return response;
   },
-  function (e) {
-    if(e.response.status === 401){
+  (err) => {
+    if (err.response.status === 401) {
       router.push("/login");
     }
-    throw e;
+    throw err;
   }
 );
 
