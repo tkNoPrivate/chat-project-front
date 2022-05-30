@@ -27,7 +27,7 @@
                 color="blue lighten-3"
                 @click="changeShowComment(`comment${post.postId}`)"
               >
-                返信を確認
+                コメント開閉
               </v-btn>
               <v-btn
                 text

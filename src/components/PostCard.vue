@@ -23,7 +23,7 @@
           </v-menu>
         </v-row>
       </v-card-title>
-      <v-card-text v-show="!isEdit">
+      <v-card-text v-show="!isEdit" style="white-space: pre-line;">
         {{ contents }}
       </v-card-text>
       <PostTextArea
