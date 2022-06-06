@@ -1,6 +1,11 @@
 <template>
   <v-app>
-    <Header :userId="userId" :userName="userName" :rooms="rooms" @searchPost="setPost" />
+    <Header
+      :userId="userId"
+      :userName="userName"
+      :rooms="rooms"
+      @searchPost="setPost"
+    />
     <Message :type="type" :messages="messages" />
     <router-view
       :loginUserId="userId"
@@ -16,6 +21,7 @@
 import Header from "./components/Header";
 import Message from "./components/Message";
 import Constant from "./common/constant";
+import axiosInstance from "./axiosInterceptor";
 
 export default {
   components: {
@@ -28,6 +34,19 @@ export default {
       this.messages = [];
     },
   },
+  async mounted() {
+    const currentPath = this.$route.path;
+    if (
+      currentPath !== "/" &&
+      currentPath !== "/login" &&
+      currentPath !== "/account/signup"
+    ) {
+      const resUser = await axiosInstance.get("/user");
+      const userInf = resUser.data;
+      this.setUserInf(userInf);
+      this.setRooms(userInf.rooms);
+    }
+  },
   data() {
     return {
       userId: "",
@@ -39,8 +58,12 @@ export default {
     };
   },
   errorCaptured(err) {
+    const status = err.response.status;
+    if (status === 404 || status === 500) {
+      return false;
+    }
     this.type = Constant.ERROR;
-    this.messages = err.response.data.messages;  
+    this.messages = err.response.data.messages;
     return false;
   },
   methods: {
@@ -55,9 +78,9 @@ export default {
     setRooms(rooms) {
       this.rooms = rooms;
     },
-    setPost(searchText){
+    setPost(searchText) {
       this.$refs.post.searchPost(searchText);
-    }
+    },
   },
 };
 </script>

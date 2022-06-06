@@ -5,9 +5,7 @@
         v-if="isVmenu"
         @click="drawer = true"
       ></v-app-bar-nav-icon>
-      <v-icon @click="back" v-if="isBack"
-        >mdi-arrow-left</v-icon
-      >
+      <v-icon @click="back" v-if="isBack">mdi-arrow-left</v-icon>
       <v-spacer></v-spacer>
       <v-text-field
         v-if="isSearchTextField"
@@ -71,7 +69,7 @@ export default {
     return {
       isSearchTextField: false,
       isVmenu: false,
-      isBack:false,
+      isBack: false,
       drawer: false,
       searchText: "",
     };
@@ -83,6 +81,12 @@ export default {
       this.isBack = this.changeShowBack();
       this.searchText = "";
     },
+  },
+  mounted() {
+    this.isVmenu = this.changeShowVmenu();
+    this.isSearchTextField = this.changeShowSearchTextField();
+    this.isBack = this.changeShowBack();
+    this.searchText = "";
   },
   methods: {
     back() {
@@ -98,20 +102,16 @@ export default {
     },
     changeShowBack() {
       const currentPath = this.$route.path;
-      return (
-        currentPath !== "/" &&
-        !(/^\/post/).test(currentPath)
-      );
+      return currentPath !== "/" && !/^\/post/.test(currentPath);
     },
-    changeShowSearchTextField(){
-      return (/^\/post/).test(this.$route.path)
+    changeShowSearchTextField() {
+      return /^\/post/.test(this.$route.path);
     },
     changeRoom(roomId) {
       this.$router.push(`/post/${roomId}`).catch(() => {});
     },
-    async search(){
-      this.$emit("searchPost",this.searchText);
-
+    async search() {
+      this.$emit("searchPost", this.searchText);
     },
     async logout() {
       await axiosInstance.post("/logout");

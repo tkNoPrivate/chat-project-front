@@ -8,6 +8,7 @@ import RoomSignup from "../views/RoomSignup";
 import RoomEdit from "../views/RoomEdit";
 import AccountEdit from "../views/AccountEdit";
 import RoomManegement from "../views/RoomManagement";
+import Error from "../views/Error";
 
 Vue.use(VueRouter);
 
@@ -53,6 +54,12 @@ const routes = [
     path: "/room/management",
     name: "RoomManegement",
     component: RoomManegement,
+  },
+  {
+    path: "/error/:status",
+    name: "Error",
+    component: Error,
+    props: (route) => ({ status: Number(route.params.status) }),
   },
 ];
 
