@@ -1,5 +1,10 @@
 <template>
-  <AccountForm :user="user" @submit="update" :isEdit="true" />
+  <AccountForm
+    :user="user"
+    @submit="update"
+    :isEdit="true"
+    title="アカウント編集"
+  />
 </template>
 
 <script>
@@ -39,7 +44,7 @@ export default {
       params.append("password", userForm.password);
       params.append("confirmPassword", userForm.confirmPassword);
       await axiosInstance.post("/user/update", params);
-      this.$emit("sendUserInf", userForm.userId, userForm.userName);
+      this.$emit("sendUserInf", userForm);
       this.$emit("throwMessage", Constant.INFO, [Message.INFO_UPDATE_COMPLETE]);
     },
   },

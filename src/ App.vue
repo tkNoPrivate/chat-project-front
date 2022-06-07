@@ -59,11 +59,11 @@ export default {
   },
   errorCaptured(err) {
     const status = err.response.status;
-    if (status === 404 || status === 500) {
-      return false;
+    if (status !== 404 && status !== 500) {
+      this.type = Constant.ERROR;
+      this.messages = err.response.data.messages;
     }
-    this.type = Constant.ERROR;
-    this.messages = err.response.data.messages;
+
     return false;
   },
   methods: {

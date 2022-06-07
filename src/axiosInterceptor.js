@@ -25,9 +25,6 @@ axiosInstance.interceptors.response.use(
         router.push(`/error/${status}`);
         break;
     }
-    // if (err.response.status === 401) {
-    //   router.push("/login");
-    // }
     throw err;
   }
 );

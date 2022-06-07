@@ -1,8 +1,11 @@
 <template>
-  <v-card width="400px" class="mx-auto mt-16">
-    <v-card-title> {{ status }}</v-card-title>
+  <v-card width="600px" class="mx-auto mt-16">
+    <v-card-title class="text-h2"> {{ status }}</v-card-title>
     <v-card-subtitle> {{ subTitle }}</v-card-subtitle>
     <v-card-text>{{ message }} </v-card-text>
+    <v-card-actions>
+      <v-btn text color="blue lighten-3" to="/">トップ</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 <script>
