@@ -44,14 +44,13 @@
             ></template
           >
           <v-card>
-            <v-container style="max-height: 200px" class="overflow-auto">
+            <!-- <v-container style="max-height: 200px" class="overflow-auto">
               <Message :type="type" :messages="messages" />
-            </v-container>
+            </v-container> -->
             <PasswordChangeDialog
               :userId="userForm.userId"
               @closeDialog="isShowPasswordChangeDialog = false"
-              @throwDialogMessage="setMessage"
-              @clearMessage="clearMessage"
+              
             />
           </v-card>
         </v-dialog>
@@ -66,14 +65,12 @@
 <script>
 import PasswordTextField from "../components/PasswordTextField";
 import PasswordChangeDialog from "./PasswordChangeDialog";
-import Message from "../components/Message";
 
 export default {
   name: "Signup",
   components: {
     PasswordTextField,
     PasswordChangeDialog,
-    Message,
   },
   props: {
     isEdit: { type: Boolean, default: false, require: true },
@@ -88,8 +85,6 @@ export default {
         password: "",
         confirmPassword: "",
       },
-      type: "",
-      messages: [],
       isShowPasswordChangeDialog: false,
     };
   },
@@ -99,22 +94,10 @@ export default {
         if (this.isEdit) {
           this.userForm.userId = this.user.userId;
           this.userForm.userName = this.user.userName;
-          this.userForm.password = this.user.password;
-          this.userForm.confirmPassword = this.user.confirmPassword;
         }
       },
       immediate: true,
       deep: true,
-    },
-  },
-  methods: {
-    setMessage(type, messages) {
-      this.type = type;
-      this.messages = messages;
-    },
-    clearMessage() {
-      this.type = "";
-      this.messages = [];
     },
   },
 };

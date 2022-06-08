@@ -33,16 +33,12 @@ export default {
     const userInf = resUser.data;
     this.user.userId = userInf.userId;
     this.user.userName = userInf.userName;
-    this.user.password = userInf.password;
-    this.user.confirmPassword = userInf.confirmPassword;
   },
   methods: {
     async update(userForm) {
       const params = new FormData();
       params.append("userId", userForm.userId);
       params.append("userName", userForm.userName);
-      params.append("password", userForm.password);
-      params.append("confirmPassword", userForm.confirmPassword);
       await axiosInstance.post("/user/update", params);
       this.$emit("sendUserInf", userForm);
       this.$emit("throwMessage", Constant.INFO, [Message.INFO_UPDATE_COMPLETE]);

@@ -1,5 +1,5 @@
 <template>
-  <AccountForm @submit="signup" :isEdit="false" title="新規登録" />
+  <AccountForm @submit="signup" :isEdit="false" title="新規登録"/>
 </template>
 
 <script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container
-      style="max-height: 600px"
+      style="height: 600px"
       class="overflow-auto"
       ref="container"
     >

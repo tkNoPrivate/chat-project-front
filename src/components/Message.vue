@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <!-- <v-container class="overflow-auto" fluid style="max-height:200px"> -->
+    <div>
     <v-alert
       class="message"
       v-for="val in messages"
@@ -7,10 +8,11 @@
       border="top"
       :color="type === 'info' ? 'blue lighten-2' : 'red lighten-2'"
       dark
+      dense
     >
       {{ val }}
-    </v-alert>
-  </div>
+    </v-alert></div>
+  <!-- </v-container> -->
 </template>
 
 <script>
