@@ -44,13 +44,9 @@
             ></template
           >
           <v-card>
-            <!-- <v-container style="max-height: 200px" class="overflow-auto">
-              <Message :type="type" :messages="messages" />
-            </v-container> -->
             <PasswordChangeDialog
               :userId="userForm.userId"
               @closeDialog="isShowPasswordChangeDialog = false"
-              
             />
           </v-card>
         </v-dialog>

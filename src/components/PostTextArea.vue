@@ -2,7 +2,7 @@
   <v-card width="500px" height="75px" class="mx-auto">
     <v-card-text>
       <v-form>
-        <v-textarea rows="1" v-model="message" prepend-icon="mdi-comment">
+        <v-textarea rows="1" maxlength="100" v-model="message" prepend-icon="mdi-comment">
           <template v-slot:append-outer>
             <v-icon :disabled="!message" @click="signupMessage">
               mdi-send

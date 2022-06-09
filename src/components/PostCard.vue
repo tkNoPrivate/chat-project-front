@@ -23,7 +23,7 @@
           </v-menu>
         </v-row>
       </v-card-title>
-      <v-card-text v-show="!isEdit" style="white-space: pre-line;">
+      <v-card-text v-show="!isEdit" style="white-space: pre-line">
         {{ contents }}
       </v-card-text>
       <PostTextArea
@@ -41,8 +41,15 @@
       </v-btn>
       <v-card-actions>
         <slot name="cardActions" />
+
         <v-row justify="end" :class="likeIconStyle" width="50px">
-          <v-icon @click="clickedLike"> mdi-hand-okay </v-icon>
+          <v-tooltip right>
+            <template #activator="{ on }" >
+              <v-icon @click="clickedLike" v-on="on"> mdi-hand-okay </v-icon>
+            </template>
+            <span v-for="like in likes" :key="like.userId"
+              >{{ like.userName }}<br /></span
+          ></v-tooltip>
           <span v-show="likeCount !== 0">{{ likeCount }}</span>
         </v-row>
       </v-card-actions>
@@ -80,6 +87,7 @@ export default {
         this.likeCount = Object.keys(this.likes).length;
       },
       immediate: true,
+      deep: true,
     },
   },
   methods: {

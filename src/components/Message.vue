@@ -9,6 +9,7 @@
       :color="type === 'info' ? 'blue lighten-2' : 'red lighten-2'"
       dark
       dense
+      dismissible
     >
       {{ val }}
     </v-alert></div>

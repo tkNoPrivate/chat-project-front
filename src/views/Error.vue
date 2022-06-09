@@ -9,6 +9,8 @@
   </v-card>
 </template>
 <script>
+import Message from "../common/message";
+
 export default {
   name: "Error",
   props: {
@@ -25,12 +27,12 @@ export default {
       handler() {
         switch (this.status) {
           case 404:
-            this.subTitle = "Not Found";
-            this.message = "ページが存在しません";
+            this.subTitle = Message.ERROR_NOT_FOUND_SUBTITLE;
+            this.message = Message.ERROR_NOT_FOUND;
             break;
           case 500:
-            this.subTitle = "Server Error";
-            this.message = "システムエラー";
+            this.subTitle = Message.ERROR_INTERNAL_SERVER_ERROR_SUBTITLE;
+            this.message = Message.ERROR_INTERNAL_SERVER_ERROR;
             break;
         }
       },
