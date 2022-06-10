@@ -1,5 +1,4 @@
 <template>
-  <!-- <v-container class="overflow-auto" fluid style="max-height:200px"> -->
     <div>
     <v-alert
       class="message"
@@ -13,7 +12,6 @@
     >
       {{ val }}
     </v-alert></div>
-  <!-- </v-container> -->
 </template>
 
 <script>

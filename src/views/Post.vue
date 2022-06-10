@@ -1,10 +1,6 @@
 <template>
   <div>
-    <v-container
-      style="height: 600px"
-      class="overflow-auto"
-      ref="container"
-    >
+    <v-container style="height: 600px" class="overflow-auto" ref="container">
       <v-row>
         <v-col cols="12" v-for="post in posts" :key="post.postId">
           <PostCard
@@ -69,6 +65,7 @@ export default {
     return {
       posts: [],
       isActivePostTextArea: false,
+      connection: null,
     };
   },
   components: {

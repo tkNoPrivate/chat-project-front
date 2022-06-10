@@ -12,7 +12,7 @@
           prepend-icon="mdi-forum"
         />
         <v-row justify="start"> <v-card-text>メンバー追加</v-card-text></v-row>
-        <v-banner @click:icon.stop="isActiveUserSearchDialog = true">
+        <v-banner>
           <v-chip
             v-for="(user, index) in roomForm.selected"
             :key="index"
@@ -24,24 +24,27 @@
             </v-avatar>
             {{ user.userId }}
           </v-chip>
-          <v-icon slot="icon" left> mdi-account-search </v-icon>
-        </v-banner>
-        <v-card-actions>
           <v-dialog
             v-model="isActiveUserSearchDialog"
             persistent
             width="500px"
             class="mx-auto mt-16"
           >
+            <template #activator="{ on }">
+              <v-icon slot="icon" left v-on="on">
+                mdi-account-search
+              </v-icon></template
+            >
             <UserSearchDialog
               :loginUserId="loginUserId"
               :parentSelected="roomForm.selected"
               @closeDialog="closeDialog"
             />
           </v-dialog>
-          <v-btn class="info" @click="$emit('submit', roomForm)"
-            >登録</v-btn
-          >
+        </v-banner>
+
+        <v-card-actions>
+          <v-btn class="info" @click="$emit('submit', roomForm)">登録</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
@@ -64,10 +67,10 @@ export default {
   data() {
     return {
       isActiveUserSearchDialog: false,
-      roomForm:{
-        roomName:"",
-        selected:[],
-      }
+      roomForm: {
+        roomName: "",
+        selected: [],
+      },
     };
   },
   watch: {

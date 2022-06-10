@@ -12,13 +12,14 @@
         v-model="searchText"
         append-icon="mdi-magnify"
         @click:append="search"
-        class="mt-7"
+        class="mt-7 ml-16"
+        style="width:60px"
         dense
         solo
       ></v-text-field>
       <v-spacer></v-spacer>
       <v-menu v-if="isVmenu">
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-chip class="ma-2" active color="primary" label v-on="on">
             <v-icon left> mdi-account-circle </v-icon>
             {{ userName }}

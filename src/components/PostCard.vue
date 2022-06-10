@@ -7,7 +7,7 @@
         <v-row justify="end">
           <v-card-subtitle>{{ updDt }}</v-card-subtitle>
           <v-menu>
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-btn icon v-on="on">
                 <v-icon>mdi-dots-vertical</v-icon>
               </v-btn>
@@ -44,9 +44,10 @@
 
         <v-row justify="end" :class="likeIconStyle" width="50px">
           <v-tooltip right>
-            <template #activator="{ on }" >
+            <template #activator="{ on }">
               <v-icon @click="clickedLike" v-on="on"> mdi-hand-okay </v-icon>
             </template>
+            <span v-show="likeCount == 0">クリックでいいね！</span>
             <span v-for="like in likes" :key="like.userId"
               >{{ like.userName }}<br /></span
           ></v-tooltip>
@@ -79,12 +80,14 @@ export default {
       isEdit: false,
       editMessage: "",
       likeCount: 0,
+      showLikeUser: false,
     };
   },
   watch: {
     likes: {
       handler() {
         this.likeCount = Object.keys(this.likes).length;
+        this.showLikeUser = this.likeCount != 0;
       },
       immediate: true,
       deep: true,
