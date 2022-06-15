@@ -28,16 +28,13 @@
 
 <script>
 import axiosInstance from "../axiosInterceptor";
-import Constant from "../common/constant";
 import PasswordTextField from "../components/PasswordTextField";
+import userStore from "../store/user-store";
 
 export default {
   name: "Login",
   components: {
     PasswordTextField,
-  },
-  props: {
-    errorMessage: { type: Array, require: false, default: () => [] },
   },
   data() {
     return {
@@ -45,11 +42,10 @@ export default {
       password: "",
     };
   },
-  created() {
-    const e = this.$route.query.error;
-    if (e) {
-      this.$emit("throwMessage", Constant.ERROR, e.response.data.messages);
-    }
+  computed: {
+    rooms() {
+      return userStore.state.rooms;
+    },
   },
   methods: {
     async submit() {
@@ -58,15 +54,16 @@ export default {
       params.append("password", this.password);
 
       await axiosInstance.post("/login", params);
-      const resUser = await axiosInstance.get("/user");
-      // レスポンス情報の設定
-      const userInf = resUser.data;
-      // App.vueにユーザー情報の設定
-      this.$emit("sendUserInf", userInf);
-      this.$emit("signupRoom", userInf.rooms);
+      // const resUser = await axiosInstance.get("/user");
+      // // レスポンス情報の設定
+      // const userInf = resUser.data;
+      // userStore.setUserId(userInf.userId);
+      // userStore.setUserName(userInf.userName);
+      // userStore.setRooms(userInf.rooms);
+      await userStore.setUserStore();
       // 初期表示は1番目の部屋コードを設定
-      if (userInf.rooms.length) {
-        this.$router.push(`/post/${userInf.rooms[0].roomId}`);
+      if (this.rooms.length) {
+        this.$router.push(`/post/${this.rooms[0].roomId}`);
       } else {
         this.$router.push("/room/management");
       }

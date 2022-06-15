@@ -6,7 +6,7 @@
         <span class="text-h6 font-weight-light">{{ userName }}</span>
         <v-row justify="end">
           <v-card-subtitle>{{ updDt }}</v-card-subtitle>
-          <v-menu>
+          <v-menu v-if="userId === loginUserId">
             <template #activator="{ on }">
               <v-btn icon v-on="on">
                 <v-icon>mdi-dots-vertical</v-icon>
@@ -60,7 +60,8 @@
 
 <script>
 import PostTextArea from "./PostTextArea";
-import Message from "../common/message";
+import message from "../common/message";
+import userStore from "../store/user-store";
 
 export default {
   name: "PostCard",
@@ -68,12 +69,18 @@ export default {
     PostTextArea,
   },
   props: {
+    userId: { type: String, require: true, default: "" },
     userName: { type: String, require: true, default: "" },
     contents: { type: String, require: true, default: "" },
     updDt: { type: String, require: true, default: "" },
     likes: { type: Array, require: false, default: () => [] },
     cardStyle: { type: String, require: true, default: "" },
     likeIconStyle: { type: String, require: true, default: "" },
+  },
+  computed: {
+    loginUserId() {
+      return userStore.state.userId;
+    },
   },
   data() {
     return {
@@ -105,7 +112,7 @@ export default {
       this.$emit("updateMessage", message);
     },
     deleteMessage() {
-      if (window.confirm(Message.CONFIRM_DELETE_EXEC)) {
+      if (window.confirm(message.CONFIRM_DELETE_EXEC)) {
         this.$emit("deleteMessage", this.contents);
       }
     },

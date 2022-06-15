@@ -36,7 +36,6 @@
               </v-icon></template
             >
             <UserSearchDialog
-              :loginUserId="loginUserId"
               :parentSelected="roomForm.selected"
               @closeDialog="closeDialog"
             />
@@ -60,7 +59,6 @@ export default {
     UserSearchDialog,
   },
   props: {
-    loginUserId: { type: String, default: null, require: false },
     title: { type: String, default: null, require: false },
     room: { type: Object, default: () => {}, require: false },
   },

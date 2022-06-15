@@ -39,7 +39,7 @@
           persistent
         >
           <template #activator="{ on }">
-            <v-btn text color="blue lighten-3" v-on="on"
+            <v-btn text color="blue lighten-3" v-on="on" @click="openDialog"
               >パスワードを変更する</v-btn
             ></template
           >
@@ -61,6 +61,8 @@
 <script>
 import PasswordTextField from "../components/PasswordTextField";
 import PasswordChangeDialog from "./PasswordChangeDialog";
+import messageStore from "../store/message-store";
+import userStore from "../store/user-store";
 
 export default {
   name: "Signup",
@@ -70,8 +72,15 @@ export default {
   },
   props: {
     isEdit: { type: Boolean, default: false, require: true },
-    user: { type: Object, default: () => {}, require: false },
     title: { type: String, default: "", require: true },
+  },
+  computed: {
+    loginUserId() {
+      return userStore.state.userId;
+    },
+    loginUserName() {
+      return userStore.state.userName;
+    },
   },
   data() {
     return {
@@ -88,12 +97,18 @@ export default {
     user: {
       handler() {
         if (this.isEdit) {
-          this.userForm.userId = this.user.userId;
-          this.userForm.userName = this.user.userName;
+          this.userForm.userId = this.loginUserId;
+          this.userForm.userName = this.loginUserName;
         }
       },
       immediate: true,
       deep: true,
+    },
+  },
+  methods: {
+    openDialog() {
+      messageStore.clearMessageInf();
+      messageStore.onDialogShowFlg();
     },
   },
 };

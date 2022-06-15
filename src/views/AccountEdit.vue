@@ -1,38 +1,19 @@
 <template>
-  <AccountForm
-    :user="user"
-    @submit="update"
-    :isEdit="true"
-    title="アカウント編集"
-  />
+  <AccountForm @submit="update" :isEdit="true" title="アカウント編集" />
 </template>
 
 <script>
 import axiosInstance from "../axiosInterceptor";
-import Constant from "../common/constant";
-import Message from "../common/message";
+import constant from "../common/constant";
+import message from "../common/message";
 import AccountForm from "../components/AccountForm.vue";
+import messageStore from "../store/message-store";
+import userStore from "../store/user-store";
 
 export default {
   name: "UserEdit",
   components: {
     AccountForm,
-  },
-  data() {
-    return {
-      user: {
-        userId: "",
-        userName: "",
-        password: "",
-        confirmPassword: "",
-      },
-    };
-  },
-  async created() {
-    const resUser = await axiosInstance.get("/user");
-    const userInf = resUser.data;
-    this.user.userId = userInf.userId;
-    this.user.userName = userInf.userName;
   },
   methods: {
     async update(userForm) {
@@ -40,8 +21,8 @@ export default {
       params.append("userId", userForm.userId);
       params.append("userName", userForm.userName);
       await axiosInstance.post("/user/update", params);
-      this.$emit("sendUserInf", userForm);
-      this.$emit("throwMessage", Constant.INFO, [Message.INFO_UPDATE_COMPLETE]);
+      userStore.setUserStore();
+      messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
     },
   },
 };

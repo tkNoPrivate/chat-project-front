@@ -13,7 +13,7 @@
         append-icon="mdi-magnify"
         @click:append="search"
         class="mt-7 ml-16"
-        style="width:60px"
+        style="width: 60px"
         dense
         solo
       ></v-text-field>
@@ -59,12 +59,13 @@
 
 <script>
 import axiosInstance from "../axiosInterceptor";
+import userStore from "../store/user-store";
 
 export default {
   name: "Header",
   props: {
-    userName: { type: String, default: "", require: false },
-    rooms: { type: Array, default: () => [], require: false },
+    // userName: { type: String, default: "", require: false },
+    // rooms: { type: Array, default: () => [], require: false },
   },
   data() {
     return {
@@ -74,6 +75,14 @@ export default {
       drawer: false,
       searchText: "",
     };
+  },
+  computed: {
+    userName() {
+      return userStore.state.userName;
+    },
+    rooms() {
+      return userStore.state.rooms;
+    },
   },
   watch: {
     $route() {
@@ -116,6 +125,7 @@ export default {
     },
     async logout() {
       await axiosInstance.post("/logout");
+      userStore.clearUserStore();
       this.$router.push("/");
     },
   },

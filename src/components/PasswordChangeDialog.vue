@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Message :type="type" :messages="messages" class="overflow-auto" fluid />
-    <v-card>
+    <v-card >
+      <Message fluid />
       <v-card-title>
-        <h1 class="display-1">パスワード変更</h1>
+        <h1 class="display-1 mt-10">パスワード変更</h1>
       </v-card-title>
       <v-form>
         <PasswordTextField
@@ -33,9 +33,10 @@
 <script>
 import PasswordTextField from "./PasswordTextField";
 import axiosInstance from "../axiosInterceptor";
-import CommonMessage from "../common/message";
-import Constant from "../common/constant";
+import message from "../common/message";
+import constant from "../common/constant";
 import Message from "./Message";
+import messageStore from "../store/message-store";
 
 export default {
   name: "PasswordChangeDialog",
@@ -51,13 +52,13 @@ export default {
       password: "",
       newPassword: "",
       newConfirmPassword: "",
-      type: "",
-      messages: [],
     };
   },
   methods: {
     close() {
       Object.assign(this.$data, this.$options.data());
+      messageStore.offDialogShowFlg();
+      messageStore.clearMessageInf();
       this.$emit("closeDialog");
     },
     async submit() {
@@ -66,15 +67,8 @@ export default {
       params.append("password", this.password);
       params.append("newPassword", this.newPassword);
       params.append("newConfirmPassword", this.newConfirmPassword);
-      try {
-        await axiosInstance.post("/user/password/update", params);
-      } catch (e) {
-        this.type = Constant.ERROR;
-        this.messages = e.response.data.messages;
-        return;
-      }
-      this.type = Constant.INFO;
-      this.messages = [CommonMessage.INFO_UPDATE_COMPLETE];
+      await axiosInstance.post("/user/password/update", params);
+      messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
     },
   },
 };

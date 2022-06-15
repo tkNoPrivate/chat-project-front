@@ -4,6 +4,7 @@
       <v-row>
         <v-col cols="12" v-for="post in posts" :key="post.postId">
           <PostCard
+            :userId="post.postUserId"
             :userName="post.postUserName"
             :contents="post.contents"
             :updDt="post.updDt"
@@ -38,7 +39,6 @@
             :ref="`comment${post.postId}`"
             :comments="post.comments"
             :postId="post.postId"
-            :loginUserId="loginUserId"
             @commentInfUpd="reconfigurePosts"
           />
         </v-col>
@@ -54,19 +54,23 @@ import PostCard from "../components/PostCard";
 import Comment from "../components/Comment";
 import PostTextArea from "../components/PostTextArea";
 import axiosInstance from "../axiosInterceptor";
+import userStore from "../store/user-store";
 
 export default {
   name: "Post",
   props: {
-    loginUserId: { type: String, require: false, default: "" },
     roomId: { type: Number, require: false, default: 0 },
   },
   data() {
     return {
       posts: [],
       isActivePostTextArea: false,
-      connection: null,
     };
+  },
+  computed: {
+    loginUserId() {
+      return userStore.state.userId;
+    },
   },
   components: {
     PostCard,

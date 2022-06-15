@@ -9,7 +9,7 @@
   </v-card>
 </template>
 <script>
-import Message from "../common/message";
+import message from "../common/message";
 
 export default {
   name: "Error",
@@ -27,12 +27,12 @@ export default {
       handler() {
         switch (this.status) {
           case 404:
-            this.subTitle = Message.ERROR_NOT_FOUND_SUBTITLE;
-            this.message = Message.ERROR_NOT_FOUND;
+            this.subTitle = message.ERROR_NOT_FOUND_SUBTITLE;
+            this.message = message.ERROR_NOT_FOUND;
             break;
           case 500:
-            this.subTitle = Message.ERROR_INTERNAL_SERVER_ERROR_SUBTITLE;
-            this.message = Message.ERROR_INTERNAL_SERVER_ERROR;
+            this.subTitle = message.ERROR_INTERNAL_SERVER_ERROR_SUBTITLE;
+            this.message = message.ERROR_INTERNAL_SERVER_ERROR;
             break;
         }
       },

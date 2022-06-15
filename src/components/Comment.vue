@@ -3,6 +3,7 @@
     <PostCard
       v-for="comment in comments"
       :key="comment.commentId"
+      :userId="comment.commentUserId"
       :userName="comment.commentUserName"
       :contents="comment.comment"
       :updDt="comment.updDt"
@@ -28,13 +29,18 @@
 import PostCard from "../components/PostCard";
 import PostTextArea from "../components/PostTextArea";
 import axiosInstance from "../axiosInterceptor";
+import userStore from "../store/user-store";
 
 export default {
   name: "Comment",
   props: {
     comments: { type: Array, require: false, default: () => [] },
     postId: { type: Number, require: false, default: 0 },
-    loginUserId: { type: String, require: false, default: "" },
+  },
+  computed: {
+    loginUserId() {
+      return userStore.state.userId;
+    },
   },
   data() {
     return {

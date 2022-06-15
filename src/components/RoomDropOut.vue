@@ -18,16 +18,23 @@
 <script>
 import axiosInstance from "../axiosInterceptor";
 import DataTable from "./DataTable";
-import Constant from "../common/constant";
-import Message from "../common/message";
+import constant from "../common/constant";
+import message from "../common/message";
+import messageStore from "../store/message-store";
+import userStore from "../store/user-store";
 
 export default {
   name: "RoomDropOut",
   components: {
     DataTable,
   },
-  props: {
-    loginUserId: { type: String, default: "", require: true },
+  computed: {
+    loginUserId() {
+      return userStore.state.userId;
+    },
+    rooms() {
+      return userStore.state.rooms;
+    },
   },
   data() {
     return {
@@ -39,19 +46,13 @@ export default {
       ],
     };
   },
-  watch: {
-    loginUserId: {
-      handler() {
-        this.setJoinRooms();
-      },
-      immediate: true,
-    },
+  created() {
+    this.setJoinRooms();
   },
   methods: {
-    async setJoinRooms() {
-      const resUser = await axiosInstance.get("/user");
+    setJoinRooms() {
       // 参加部屋データを設定
-      this.joinRooms = resUser.data.rooms.filter(
+      this.joinRooms = this.rooms.filter(
         (elm) => elm.registeredUser !== this.loginUserId
       );
     },
@@ -62,12 +63,13 @@ export default {
         params.append(`roomIdList[${i}]`, elm.roomId);
       });
       await axiosInstance.post("/joinroom/delete", params);
-      this.$emit("throwMessage", Constant.INFO, [
-        Message.INFO_ROOM_DROPOUT_COMPLETE,
+      messageStore.setMessageInf(constant.INFO, [
+        message.INFO_ROOM_DROPOUT_COMPLETE,
       ]);
       // データの更新
+      await userStore.setUserStore();
       this.setJoinRooms();
-      this.$emit("updateRoom");
+      this.$refs.JoinRoomsDataTable.selected = [];
     },
   },
 };

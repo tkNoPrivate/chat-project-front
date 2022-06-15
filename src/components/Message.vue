@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div>
     <v-alert
       class="message"
       v-for="val in messages"
@@ -11,18 +11,26 @@
       dismissible
     >
       {{ val }}
-    </v-alert></div>
+    </v-alert>
+  </div>
 </template>
 
 <script>
+import messageStore from "../store/message-store";
 export default {
   name: "Message",
-  props: {
-    type: { type: String, require: true, default: "" },
-    messages: { type: Array, require: true, default: () => [] },
+  watch: {
+    $route() {
+      messageStore.clearMessageInf();
+    },
   },
-  data() {
-    return {};
+  computed: {
+    type() {
+      return messageStore.state.type;
+    },
+    messages() {
+      return messageStore.state.messages;
+    },
   },
 };
 </script>

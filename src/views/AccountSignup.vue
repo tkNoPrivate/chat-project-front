@@ -1,12 +1,13 @@
 <template>
-  <AccountForm @submit="signup" :isEdit="false" title="新規登録"/>
+  <AccountForm @submit="signup" :isEdit="false" title="新規登録" />
 </template>
 
 <script>
 import axiosInstance from "../axiosInterceptor";
 import AccountForm from "../components/AccountForm.vue";
-import Constant from "../common/constant";
-import Message from "../common/message";
+import constant from "../common/constant";
+import message from "../common/message";
+import messageStore from "../store/message-store";
 
 export default {
   name: "AccountSignup",
@@ -25,7 +26,7 @@ export default {
       params.append("confirmPassword", userForm.confirmPassword);
       await axiosInstance.post("/user/signup", params);
       this.$router.push("/login");
-      this.$emit("throwMessage", Constant.INFO, [Message.INFO_SIGNUP_COMPLETE]);
+      messageStore.setMessageInf(constant.INFO, [message.INFO_SIGNUP_COMPLETE]);
     },
   },
 };

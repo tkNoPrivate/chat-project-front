@@ -20,6 +20,7 @@
 <script>
 import axiosInstance from "../axiosInterceptor";
 import DataTable from "./DataTable";
+import userStore from "../store/user-store";
 
 export default {
   name: "UserSearchDialog",
@@ -27,8 +28,12 @@ export default {
     DataTable,
   },
   props: {
-    loginUserId: { type: String, default: null, require: false },
     parentSelected: { type: Array, default: () => [], require: false },
+  },
+  computed: {
+    loginUserId() {
+      return userStore.state.userId;
+    },
   },
   data() {
     return {

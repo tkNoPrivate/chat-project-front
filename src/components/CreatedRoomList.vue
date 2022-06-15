@@ -15,16 +15,20 @@
 <script>
 import axiosInstance from "../axiosInterceptor";
 import DataTable from "./DataTable";
-import Constant from "../common/constant";
-import Message from "../common/message";
+import constant from "../common/constant";
+import message from "../common/message";
+import messageStore from "../store/message-store";
+import userStore from "../store/user-store";
 
 export default {
   name: "CreatedRoomList",
   components: {
     DataTable,
   },
-  props: {
-    loginUserId: { type: String, default: null, require: false },
+  computed: {
+    loginUserId() {
+      return userStore.state.userId;
+    },
   },
   data() {
     return {
@@ -36,13 +40,8 @@ export default {
       ],
     };
   },
-  watch: {
-    loginUserId: {
-      async handler() {
-        this.setCreatedRooms();
-      },
-      immediate: true,
-    },
+  created() {
+    this.setCreatedRooms();
   },
   methods: {
     async setCreatedRooms() {
@@ -53,14 +52,17 @@ export default {
       this.$router.push(`/room/edit/${room.roomId}`);
     },
     async deleteRoom(room) {
-      if (window.confirm(Message.CONFIRM_DELETE_EXEC)) {
+      if (window.confirm(message.CONFIRM_DELETE_EXEC)) {
         const params = new FormData();
         params.append("roomId", room.roomId);
         params.append("roomName", room.roomName);
         await axiosInstance.post("/room/delete", params);
+        // 画面の更新
+        await userStore.setUserStore();
         this.setCreatedRooms();
-        this.$emit("throwMessage", Constant.INFO, [
-          Message.INFO_DELETE_COMPLETE,
+
+        messageStore.setMessageInf(constant.INFO, [
+          message.INFO_DELETE_COMPLETE,
         ]);
       }
     },

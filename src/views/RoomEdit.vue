@@ -1,17 +1,13 @@
 <template>
-  <RoomForm
-    title="部屋編集"
-    :loginUserId="loginUserId"
-    :room="room"
-    @submit="updateRoom"
-    ref="roomForm"
-  ></RoomForm>
+  <RoomForm title="部屋編集" :room="room" @submit="updateRoom" ref="roomForm" />
 </template>
 <script>
 import axiosInstance from "../axiosInterceptor";
-import Constant from "../common/constant";
-import Message from "../common/message";
+import constant from "../common/constant";
+import message from "../common/message";
 import RoomForm from "../components/RoomForm";
+import messageStore from "../store/message-store";
+import userStore from "../store/user-store";
 
 export default {
   name: "RoomEdit",
@@ -19,7 +15,6 @@ export default {
     RoomForm,
   },
   props: {
-    loginUserId: { type: String, default: "", require: true },
     roomId: { type: Number, default: null, require: true },
   },
   data() {
@@ -43,11 +38,11 @@ export default {
       params.append("roomId", this.roomId);
       params.append("roomName", roomForm.roomName);
       await axiosInstance.post("/room/update", params);
-      // 部屋を取得し、ヘッダーに再設定
-      this.setHeaderData();
+      // ユーザーストアの更新
+      userStore.setUserStore();
       // 部屋参加ユーザーの更新
       this.updateJoinRoom(roomForm.selected);
-      this.$emit("throwMessage", Constant.INFO, [Message.INFO_UPDATE_COMPLETE]);
+      messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
     },
     async updateJoinRoom(selected) {
       // 参加部屋テーブルをクリア
@@ -63,11 +58,6 @@ export default {
         params.append("roomIdList[0]", this.roomId);
         await axiosInstance.post("/joinroom/signup", params);
       }
-    },
-    async setHeaderData() {
-      const resUser = await axiosInstance.get("/user");
-      // ドロワーメニューに部屋の再設定
-      this.$emit("signupRoom", resUser.data.rooms);
     },
   },
 };

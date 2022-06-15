@@ -18,16 +18,20 @@
 <script>
 import axiosInstance from "../axiosInterceptor";
 import DataTable from "./DataTable";
-import Constant from "../common/constant";
-import Message from "../common/message";
+import constant from "../common/constant";
+import message from "../common/message";
+import messageStore from "../store/message-store";
+import userStore from "../store/user-store";
 
 export default {
   name: "RoomJoin",
   components: {
     DataTable,
   },
-  props: {
-    loginUserId: { type: String, default: "", require: true },
+  computed: {
+    loginUserId() {
+      return userStore.state.userId;
+    },
   },
   data() {
     return {
@@ -39,13 +43,8 @@ export default {
       ],
     };
   },
-  watch: {
-    loginUserId: {
-      handler() {
-        this.setRoomSearchResults();
-      },
-      immediate: true,
-    },
+  created() {
+    this.setRoomSearchResults();
   },
   methods: {
     async setRoomSearchResults() {
@@ -62,11 +61,13 @@ export default {
       await axiosInstance.post("/joinroom/signup", params);
 
       // 正常終了メッセージの設定
-      this.$emit("throwMessage", Constant.INFO, [
-        Message.INFO_ROOM_JOIN_COMPLETE,
+      messageStore.setMessageInf(constant.INFO, [
+        message.INFO_ROOM_JOIN_COMPLETE,
       ]);
       this.setRoomSearchResults();
-      this.$emit("roomUpdate");
+      // ユーザーストアの更新
+      userStore.setUserStore();
+      this.$refs.roomSearchDataTable.selected = [];
     },
   },
 };
