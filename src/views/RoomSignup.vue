@@ -30,10 +30,10 @@ export default {
       const params = new FormData();
       params.append("roomName", roomForm.roomName);
       params.append("registeredUser", this.loginUserId);
-
       await axiosInstance.post("/room/signup", params);
-      // ユーザーストアの更新
+
       await userStore.setUserStore();
+      
       //追加ユーザーが選択されている場合、追加処理APIを呼び出し
       if (roomForm.selected.length) {
         const params = new FormData();

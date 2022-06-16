@@ -38,10 +38,12 @@ export default {
       params.append("roomId", this.roomId);
       params.append("roomName", roomForm.roomName);
       await axiosInstance.post("/room/update", params);
-      // ユーザーストアの更新
+      
       userStore.setUserStore();
+
       // 部屋参加ユーザーの更新
       this.updateJoinRoom(roomForm.selected);
+      
       messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
     },
     async updateJoinRoom(selected) {

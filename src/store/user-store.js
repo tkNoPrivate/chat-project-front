@@ -5,6 +5,8 @@ const userStore = Vue.observable({
   state: {
     userId: "",
     userName: "",
+    insDt: "",
+    updDt: "",
     rooms: [],
   },
   async setUserStore() {
@@ -12,6 +14,8 @@ const userStore = Vue.observable({
     const userInf = resUser.data;
     this.state.userId = userInf.userId;
     this.state.userName = userInf.userName;
+    this.state.insDt = userInf.insDt;
+    this.state.updDt = userInf.updDt;
     this.state.rooms = userInf.rooms;
   },
   clearUserStore() {
@@ -19,15 +23,6 @@ const userStore = Vue.observable({
     this.state.userName = "";
     this.state.rooms = [];
   },
-    setUserId(userId) {
-      this.state.userId = userId;
-    },
-    setUserName(userName) {
-      this.state.userName = userName;
-    },
-    setRooms(rooms) {
-      this.state.rooms = rooms;
-    },
 });
 
 export default userStore;

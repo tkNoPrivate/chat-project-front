@@ -80,9 +80,7 @@ export default {
   watch: {
     roomId: {
       async handler() {
-        // 投稿の取得、設定
         await this.reconfigurePosts();
-        // 最下部へスクロール
         this.scrollToBottom();
       },
       immediate: true,

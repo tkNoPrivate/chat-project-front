@@ -54,13 +54,9 @@ export default {
       params.append("password", this.password);
 
       await axiosInstance.post("/login", params);
-      // const resUser = await axiosInstance.get("/user");
-      // // レスポンス情報の設定
-      // const userInf = resUser.data;
-      // userStore.setUserId(userInf.userId);
-      // userStore.setUserName(userInf.userName);
-      // userStore.setRooms(userInf.rooms);
+      
       await userStore.setUserStore();
+      
       // 初期表示は1番目の部屋コードを設定
       if (this.rooms.length) {
         this.$router.push(`/post/${this.rooms[0].roomId}`);

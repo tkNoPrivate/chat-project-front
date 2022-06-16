@@ -25,8 +25,9 @@ export default {
       params.append("password", userForm.password);
       params.append("confirmPassword", userForm.confirmPassword);
       await axiosInstance.post("/user/signup", params);
-      this.$router.push("/login");
+      messageStore.onMessageHoldFlg();
       messageStore.setMessageInf(constant.INFO, [message.INFO_SIGNUP_COMPLETE]);
+      this.$router.push("/login");
     },
   },
 };
