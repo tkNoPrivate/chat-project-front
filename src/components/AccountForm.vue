@@ -52,6 +52,14 @@
         </v-dialog>
         <v-card-actions>
           <v-btn class="info" @click="$emit('submit', userForm)">登録</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            v-if="isEdit"
+            text
+            color="blue lighten-3"
+            @click="$emit('delete', userForm)"
+            >アカウント削除</v-btn
+          >
         </v-card-actions>
       </v-form>
     </v-card>
@@ -62,7 +70,6 @@
 import PasswordTextField from "../components/PasswordTextField";
 import PasswordChangeDialog from "./PasswordChangeDialog";
 import messageStore from "../store/message-store";
-import userStore from "../store/user-store";
 
 export default {
   name: "Signup",
@@ -71,16 +78,9 @@ export default {
     PasswordChangeDialog,
   },
   props: {
+    user: { type: Object, default: () => {}, require: false },
     isEdit: { type: Boolean, default: false, require: true },
     title: { type: String, default: "", require: true },
-  },
-  computed: {
-    loginUserId() {
-      return userStore.state.userId;
-    },
-    loginUserName() {
-      return userStore.state.userName;
-    },
   },
   data() {
     return {
@@ -97,8 +97,8 @@ export default {
     user: {
       handler() {
         if (this.isEdit) {
-          this.userForm.userId = this.loginUserId;
-          this.userForm.userName = this.loginUserName;
+          this.userForm.userId = this.user.userId;
+          this.userForm.userName = this.user.userName;
         }
       },
       immediate: true,
