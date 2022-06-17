@@ -25,9 +25,8 @@ export default {
   },
   watch: {
     roomId: {
-      async handler() {
-        const resRoom = await axiosInstance.get(`/room/${this.roomId}`);
-        this.room = resRoom.data;
+      handler() {
+        this.setRoom();
       },
       immediate: true,
     },
@@ -37,13 +36,20 @@ export default {
       const params = new FormData();
       params.append("roomId", this.roomId);
       params.append("roomName", roomForm.roomName);
-      await axiosInstance.post("/room/update", params);
-      
-      userStore.setUserStore();
+      params.append("updDt", this.room.updDt);
+      await axiosInstance.post("/room/update", params).catch((e) => {
+        if (e.response.status === 409) {
+          this.setRoom();
+          userStore.setUserStore();
+        }
+        throw e;
+      });
 
       // 部屋参加ユーザーの更新
-      this.updateJoinRoom(roomForm.selected);
-      
+      await this.updateJoinRoom(roomForm.selected);
+      // 画面データの更新
+      this.setRoom();
+      userStore.setUserStore();
       messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
     },
     async updateJoinRoom(selected) {
@@ -60,6 +66,10 @@ export default {
         params.append("roomIdList[0]", this.roomId);
         await axiosInstance.post("/joinroom/signup", params);
       }
+    },
+    async setRoom() {
+      const resRoom = await axiosInstance.get(`/room/${this.roomId}`);
+      this.room = resRoom.data;
     },
   },
 };

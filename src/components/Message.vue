@@ -21,10 +21,7 @@ export default {
   name: "Message",
   watch: {
     $route() {
-      console.log(messageStore.state.isHoldMessage);
-      messageStore.state.isHoldMessage
-        ? messageStore.offMessageHoldFlg()
-        : messageStore.clearMessageInf();
+      messageStore.clearMessageInf();
     },
   },
   computed: {

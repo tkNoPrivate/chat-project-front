@@ -5,7 +5,6 @@ const messageStore = Vue.observable({
     type: "",
     messages: [],
     isShowDialog: false,
-    isHoldMessage: false,
   },
   setMessageInf(type, messages) {
     this.state.type = type;
@@ -20,12 +19,6 @@ const messageStore = Vue.observable({
   },
   offDialogShowFlg() {
     this.state.isShowDialog = false;
-  },
-  onMessageHoldFlg() {
-    this.state.isHoldMessage = true;
-  },
-  offMessageHoldFlg() {
-    this.state.isHoldMessage = false;
   },
 });
 

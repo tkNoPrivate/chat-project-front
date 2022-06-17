@@ -89,7 +89,9 @@ export default {
       this.roomForm.selected = selected;
     },
     remove(index) {
-      this.roomForm.selected.splice(index, 1);
+      this.roomForm.selected = this.roomForm.selected.filter(
+        (val, i) => i !== index
+      );
     },
     clearForm() {
       this.roomForm.roomName = "";

@@ -56,7 +56,7 @@ export default {
       await axiosInstance.post("/login", params);
       
       await userStore.setUserStore();
-      
+
       // 初期表示は1番目の部屋コードを設定
       if (this.rooms.length) {
         this.$router.push(`/post/${this.rooms[0].roomId}`);

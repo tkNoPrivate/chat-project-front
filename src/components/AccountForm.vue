@@ -57,7 +57,7 @@
             v-if="isEdit"
             text
             color="blue lighten-3"
-            @click="$emit('delete', userForm)"
+            @click="$emit('delete')"
             >アカウント削除</v-btn
           >
         </v-card-actions>

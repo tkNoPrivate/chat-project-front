@@ -32,20 +32,23 @@ export default {
       params.append("userId", userForm.userId);
       params.append("userName", userForm.userName);
       params.append("updDt", this.user.updDt);
-      await axiosInstance
-        .post("/user/update", params)
-        .finally(userStore.setUserStore());
+      await axiosInstance.post("/user/update", params).finally(() => {
+        userStore.setUserStore();
+      });
       messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
     },
-    async deleteAccount(userForm) {
+    async deleteAccount() {
       if (window.confirm(message.CONFIRM_DELETE_EXEC)) {
         const params = new FormData();
-        params.append("userId", userForm.userId);
-        params.append("userName", userForm.userName);
-        await axiosInstance.post("/user/delete", params).finally(() => {
-          messageStore.onMessageHoldFlg();
-          this.$router.push("/");
+        params.append("userId", this.user.userId);
+        params.append("userName", this.user.userName);
+        await axiosInstance.post("/user/delete", params).catch((e) => {
+          if (e.response.status === 409) {
+            this.$router.push("/");
+          }
+          throw e;
         });
+        await this.$router.push("/");
         messageStore.setMessageInf(constant.INFO, [
           message.INFO_DELETE_COMPLETE,
         ]);

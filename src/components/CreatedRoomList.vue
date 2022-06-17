@@ -56,10 +56,11 @@ export default {
         const params = new FormData();
         params.append("roomId", room.roomId);
         params.append("roomName", room.roomName);
-        await axiosInstance.post("/room/delete", params);
-        // 画面の更新
-        await userStore.setUserStore();
-        this.setCreatedRooms();
+        await axiosInstance.post("/room/delete", params).finally(() => {
+          // 画面の更新
+          userStore.setUserStore();
+          this.setCreatedRooms();
+        });
 
         messageStore.setMessageInf(constant.INFO, [
           message.INFO_DELETE_COMPLETE,
