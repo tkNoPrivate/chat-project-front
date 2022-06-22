@@ -14,7 +14,12 @@
       v-show="isActiveComment"
       @clickedLike="clickedCommentLike(comment.commentId)"
       @updateMessage="
-        updateComment($event, comment.commentId, `postCard${comment.commentId}`)
+        updateComment(
+          $event,
+          comment.updDt,
+          comment.commentId,
+          `postCard${comment.commentId}`
+        )
       "
       @deleteMessage="deleteComment($event, comment.commentId)"
     />
@@ -59,26 +64,28 @@ export default {
     changeShowPostTextArea() {
       this.isActivePostTextArea = !this.isActivePostTextArea;
     },
-    clickedCommentLike(commentId) {
+    async clickedCommentLike(commentId) {
       this.comments
         .find((elm) => elm.commentId === commentId)
         .commentLikes.find((elm) => elm.userId === this.loginUserId)
-        ? this.commentLikeCountDown(commentId)
-        : this.commentLikeCountUp(commentId);
+        ? await this.commentLikeCountDown(commentId)
+        : await this.commentLikeCountUp(commentId);
     },
     async commentLikeCountUp(commentId) {
       const params = new FormData();
       params.append("userId", this.loginUserId);
       params.append("commentId", commentId);
-      await axiosInstance.post("/commentlike/signup", params);
-      this.$emit("commentInfUpd");
+      await axiosInstance.post("/commentlike/signup", params).finally(() => {
+        this.$emit("commentInfUpd");
+      });
     },
     async commentLikeCountDown(commentId) {
       const params = new FormData();
       params.append("userId", this.loginUserId);
       params.append("commentId", commentId);
-      await axiosInstance.post("/commentlike/delete", params);
-      this.$emit("commentInfUpd");
+      await axiosInstance.post("/commentlike/delete", params).finally(() => {
+        this.$emit("commentInfUpd");
+      });
     },
     async signupComment(message) {
       const params = new FormData();
@@ -91,21 +98,23 @@ export default {
       this.$refs.postTextArea.clearMessage();
       this.isActiveComment = true;
     },
-    async updateComment(message, commentId, ref) {
+    async updateComment(message, updDt, commentId, ref) {
       const params = new FormData();
       params.append("commentId", commentId);
       params.append("comment", message);
-      await axiosInstance.post("/comment/update", params);
-
-      this.$emit("commentInfUpd");
-      this.$refs[ref][0].changeShowMessageEdit();
+      params.append("updDt", updDt);
+      await axiosInstance.post("/comment/update", params).finally(() => {
+        this.$emit("commentInfUpd");
+        this.$refs[ref][0].changeShowMessageEdit();
+      });
     },
     async deleteComment(contents, commentId) {
       const params = new FormData();
       params.append("commentId", commentId);
       params.append("comment", contents);
-      await axiosInstance.post("/comment/delete", params);
-      this.$emit("commentInfUpd");
+      await axiosInstance.post("/comment/delete", params).finally(() => {
+        this.$emit("commentInfUpd");
+      });
     },
   },
 };

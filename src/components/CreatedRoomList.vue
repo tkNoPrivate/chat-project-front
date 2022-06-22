@@ -56,12 +56,19 @@ export default {
         const params = new FormData();
         params.append("roomId", room.roomId);
         params.append("roomName", room.roomName);
-        await axiosInstance.post("/room/delete", params).finally(() => {
-          // 画面の更新
-          userStore.setUserStore();
-          this.setCreatedRooms();
+        params.append("updDt", room.updDt);
+        await axiosInstance.post("/room/delete", params).catch((e) => {
+          if (e.response.status === 409) {
+            // 画面の更新
+            userStore.setUserStore();
+            this.setCreatedRooms();
+          }
+          throw e;
         });
 
+        // 画面の更新
+        userStore.setUserStore();
+        this.setCreatedRooms();
         messageStore.setMessageInf(constant.INFO, [
           message.INFO_DELETE_COMPLETE,
         ]);

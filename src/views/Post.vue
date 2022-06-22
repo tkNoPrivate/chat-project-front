@@ -14,7 +14,12 @@
             :ref="`postCard${post.postId}`"
             @clickedLike="clickedPostLike(post.postId)"
             @updateMessage="
-              updatePost($event, post.postId, `postCard${post.postId}`)
+              updatePost(
+                $event,
+                post.updDt,
+                post.postId,
+                `postCard${post.postId}`
+              )
             "
             @deleteMessage="deletePost($event, post.postId)"
           >
@@ -93,12 +98,12 @@ export default {
     changeShowPostTextArea(ref) {
       this.$refs[ref][0].changeShowPostTextArea();
     },
-    clickedPostLike(postId) {
+    async clickedPostLike(postId) {
       this.posts
         .find((elm) => elm.postId === postId)
         .postLikes.find((elm) => elm.userId === this.loginUserId)
-        ? this.postLikeCountDown(postId)
-        : this.postLikeCountUp(postId);
+        ? await this.postLikeCountDown(postId)
+        : await this.postLikeCountUp(postId);
     },
     async searchPost(searchText) {
       const result = await axiosInstance.get("/post/search", {
@@ -116,37 +121,42 @@ export default {
       this.$refs.postTextArea.clearMessage();
       this.scrollToBottom();
     },
-    async updatePost(message, postId, ref) {
+    async updatePost(message, updDt, postId, ref) {
       const params = new FormData();
       params.append("postId", postId);
       params.append("contents", message);
-      await axiosInstance.post("/post/update", params);
-
-      await this.reconfigurePosts();
+      params.append("updDt", updDt);
+      await axiosInstance.post("/post/update", params).finally(async () => {
+        await this.reconfigurePosts();
+        this.$refs[ref][0].changeShowMessageEdit();
+      });
       this.scrollToBottom();
-      this.$refs[ref][0].changeShowMessageEdit();
     },
     async deletePost(contents, postId) {
       const params = new FormData();
       params.append("postId", postId);
       params.append("contents", contents);
-      await axiosInstance.post("/post/delete", params);
-      await this.reconfigurePosts();
+      await axiosInstance.post("/post/delete", params).finally(async () => {
+        await this.reconfigurePosts();
+      });
+
       this.scrollToBottom();
     },
     async postLikeCountUp(postId) {
       const params = new FormData();
       params.append("userId", this.loginUserId);
       params.append("postId", postId);
-      await axiosInstance.post("/postlike/signup", params);
-      await this.reconfigurePosts();
+      await axiosInstance.post("/postlike/signup", params).finally(async () => {
+        await this.reconfigurePosts();
+      });
     },
     async postLikeCountDown(postId) {
       const params = new FormData();
       params.append("userId", this.loginUserId);
       params.append("postId", postId);
-      await axiosInstance.post("/postlike/delete", params);
-      await this.reconfigurePosts();
+      await axiosInstance.post("/postlike/delete", params).finally(() => {
+        this.reconfigurePosts();
+      });
     },
     async reconfigurePosts() {
       const resPosts = await axiosInstance.get(`/posts/${this.roomId}`);

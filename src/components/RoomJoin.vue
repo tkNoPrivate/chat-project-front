@@ -58,16 +58,17 @@ export default {
       this.$refs.roomSearchDataTable.selected.forEach((elm, i) => {
         params.append(`roomIdList[${i}]`, elm.roomId);
       });
-      await axiosInstance.post("/joinroom/signup", params);
+      await axiosInstance.post("/joinroom/signup", params).finally(async () => {
+        // 画面情報の更新
+        await this.setRoomSearchResults();
+        await userStore.setUserStore();
+        this.$refs.roomSearchDataTable.selected = [];
+      });
 
       // 正常終了メッセージの設定
       messageStore.setMessageInf(constant.INFO, [
         message.INFO_ROOM_JOIN_COMPLETE,
       ]);
-      this.setRoomSearchResults();
-      // ユーザーストアの更新
-      userStore.setUserStore();
-      this.$refs.roomSearchDataTable.selected = [];
     },
   },
 };

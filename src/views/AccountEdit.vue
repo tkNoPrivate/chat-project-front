@@ -32,8 +32,11 @@ export default {
       params.append("userId", userForm.userId);
       params.append("userName", userForm.userName);
       params.append("updDt", this.user.updDt);
-      await axiosInstance.post("/user/update", params).finally(() => {
-        userStore.setUserStore();
+      await axiosInstance.post("/user/update", params).catch((e) => {
+        if (e.response.status === 409) {
+          userStore.setUserStore();
+        }
+        throw e;
       });
       messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
     },
@@ -42,9 +45,10 @@ export default {
         const params = new FormData();
         params.append("userId", this.user.userId);
         params.append("userName", this.user.userName);
+        params.append("updDt", this.user.updDt);
         await axiosInstance.post("/user/delete", params).catch((e) => {
           if (e.response.status === 409) {
-            this.$router.push("/");
+            userStore.setUserStore();
           }
           throw e;
         });

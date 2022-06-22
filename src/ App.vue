@@ -1,12 +1,8 @@
 <template>
   <v-app>
-    <Header
-      @searchPost="setPost"
-    />
+    <Header @searchPost="setPost" />
     <Message v-show="!isShowDialog" />
-    <router-view
-      ref="post"
-    />
+    <router-view ref="post" />
   </v-app>
 </template>
 

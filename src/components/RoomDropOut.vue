@@ -62,14 +62,15 @@ export default {
       this.$refs.JoinRoomsDataTable.selected.forEach((elm, i) => {
         params.append(`roomIdList[${i}]`, elm.roomId);
       });
-      await axiosInstance.post("/joinroom/delete", params);
+      await axiosInstance.post("/joinroom/delete", params).finally(async () => {
+        // データの更新
+        await userStore.setUserStore();
+        await this.setJoinRooms();
+        this.$refs.JoinRoomsDataTable.selected = [];
+      });
       messageStore.setMessageInf(constant.INFO, [
         message.INFO_ROOM_DROPOUT_COMPLETE,
       ]);
-      // データの更新
-      await userStore.setUserStore();
-      this.setJoinRooms();
-      this.$refs.JoinRoomsDataTable.selected = [];
     },
   },
 };
