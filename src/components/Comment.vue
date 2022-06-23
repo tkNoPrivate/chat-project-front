@@ -21,7 +21,7 @@
           `postCard${comment.commentId}`
         )
       "
-      @deleteMessage="deleteComment($event, comment.commentId)"
+      @deleteMessage="deleteComment($event, comment.updDt, comment.commentId)"
     />
     <PostTextArea
       ref="postTextArea"
@@ -103,18 +103,28 @@ export default {
       params.append("commentId", commentId);
       params.append("comment", message);
       params.append("updDt", updDt);
-      await axiosInstance.post("/comment/update", params).finally(() => {
-        this.$emit("commentInfUpd");
-        this.$refs[ref][0].changeShowMessageEdit();
+      await axiosInstance.post("/comment/update", params).catch((e) => {
+        if (e.response.status === 409) {
+          this.$emit("commentInfUpd");
+          this.$refs[ref][0].changeShowMessageEdit();
+        }
+        throw e;
       });
+      this.$emit("commentInfUpd");
+      this.$refs[ref][0].changeShowMessageEdit();
     },
-    async deleteComment(contents, commentId) {
+    async deleteComment(contents, updDt, commentId) {
       const params = new FormData();
       params.append("commentId", commentId);
       params.append("comment", contents);
-      await axiosInstance.post("/comment/delete", params).finally(() => {
-        this.$emit("commentInfUpd");
+      params.append("updDt", updDt);
+      await axiosInstance.post("/comment/delete", params).catch((e) => {
+        if (e.response.status === 409) {
+          this.$emit("commentInfUpd");
+        }
+        throw e;
       });
+      this.$emit("commentInfUpd");
     },
   },
 };

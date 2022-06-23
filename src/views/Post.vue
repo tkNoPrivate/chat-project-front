@@ -21,7 +21,7 @@
                 `postCard${post.postId}`
               )
             "
-            @deleteMessage="deletePost($event, post.postId)"
+            @deleteMessage="deletePost($event, post.updDt, post.postId)"
           >
             <template #cardActions>
               <v-btn
@@ -126,20 +126,29 @@ export default {
       params.append("postId", postId);
       params.append("contents", message);
       params.append("updDt", updDt);
-      await axiosInstance.post("/post/update", params).finally(async () => {
-        await this.reconfigurePosts();
-        this.$refs[ref][0].changeShowMessageEdit();
+      await axiosInstance.post("/post/update", params).catch(async (e) => {
+        if (e.response.status === 409) {
+          await this.reconfigurePosts();
+          this.$refs[ref][0].changeShowMessageEdit();
+        }
+        throw e;
       });
+      await this.reconfigurePosts();
+      this.$refs[ref][0].changeShowMessageEdit();
       this.scrollToBottom();
     },
-    async deletePost(contents, postId) {
+    async deletePost(contents, updDt, postId) {
       const params = new FormData();
       params.append("postId", postId);
       params.append("contents", contents);
-      await axiosInstance.post("/post/delete", params).finally(async () => {
-        await this.reconfigurePosts();
+      params.append("updDt", updDt);
+      await axiosInstance.post("/post/delete", params).catch(async (e) => {
+        if (e.response.status === 409) {
+          await this.reconfigurePosts();
+        }
+        throw e;
       });
-
+      await this.reconfigurePosts();
       this.scrollToBottom();
     },
     async postLikeCountUp(postId) {
