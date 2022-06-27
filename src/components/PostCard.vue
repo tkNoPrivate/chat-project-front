@@ -30,6 +30,9 @@
         v-show="isEdit"
         :editMessage="editMessage"
         @signupMessage="updateMessage"
+        :isError="
+          errorFields.includes('contents') || errorFields.includes('comment')
+        "
       />
       <v-btn
         v-show="isEdit"
@@ -62,6 +65,7 @@
 import PostTextArea from "./PostTextArea";
 import message from "../common/message";
 import userStore from "../store/user-store";
+import messageStore from "../store/message-store";
 
 export default {
   name: "PostCard",
@@ -80,6 +84,9 @@ export default {
   computed: {
     loginUserId() {
       return userStore.state.userId;
+    },
+    errorFields() {
+      return messageStore.state.errorFields;
     },
   },
   data() {

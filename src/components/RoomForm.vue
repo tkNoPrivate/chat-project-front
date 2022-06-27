@@ -10,6 +10,7 @@
           placeholder="部屋名を入力して下さい"
           label="部屋名"
           prepend-icon="mdi-forum"
+          :error="errorFields.includes('roomName')"
         />
         <v-row justify="start"> <v-card-text>メンバー追加</v-card-text></v-row>
         <v-banner>
@@ -52,6 +53,7 @@
 
 <script>
 import UserSearchDialog from "../components/UserSearchDialog";
+import messageStore from "../store/message-store";
 
 export default {
   name: "RoomForm",
@@ -61,6 +63,11 @@ export default {
   props: {
     title: { type: String, default: null, require: false },
     room: { type: Object, default: () => {}, require: false },
+  },
+  computed: {
+    errorFields() {
+      return messageStore.state.errorFields;
+    },
   },
   data() {
     return {

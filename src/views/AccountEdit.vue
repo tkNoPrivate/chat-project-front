@@ -38,7 +38,12 @@ export default {
         }
         throw e;
       });
-      messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
+      userStore.setUserStore();
+      messageStore.setMessageInf(
+        constant.INFO,
+        [message.INFO_UPDATE_COMPLETE],
+        []
+      );
     },
     async deleteAccount() {
       if (window.confirm(message.CONFIRM_DELETE_EXEC)) {
@@ -55,6 +60,7 @@ export default {
         await this.$router.push("/");
         messageStore.setMessageInf(constant.INFO, [
           message.INFO_DELETE_COMPLETE,
+          [],
         ]);
       }
     },

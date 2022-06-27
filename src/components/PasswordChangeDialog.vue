@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card >
+    <v-card>
       <Message fluid />
       <v-card-title>
         <h1 class="display-1 mt-10">パスワード変更</h1>
@@ -10,16 +10,19 @@
           :password.sync="password"
           placeholder="現在のパスワードを入力して下さい"
           label="現在のパスワード"
+          :isError="errorFields.includes('password')"
         />
         <PasswordTextField
           :password.sync="newPassword"
           placeholder="新しいパスワードを半角英数字記号で入力して下さい"
           label="新しいパスワード"
+          :isError="errorFields.includes('newPassword')"
         />
         <PasswordTextField
           :password.sync="newConfirmPassword"
           placeholder="上と同じパスワードを入力して下さい"
           label="確認用パスワード"
+          :isError="errorFields.includes('newConfirmPassword')"
         />
         <v-card-actions>
           <v-btn class="info" @click="submit">更新</v-btn>
@@ -47,6 +50,11 @@ export default {
   props: {
     userId: { type: String, default: "", require: true },
   },
+  computed: {
+    errorFields() {
+      return messageStore.state.errorFields;
+    },
+  },
   data() {
     return {
       password: "",
@@ -68,7 +76,11 @@ export default {
       params.append("newPassword", this.newPassword);
       params.append("newConfirmPassword", this.newConfirmPassword);
       await axiosInstance.post("/user/password/update", params);
-      messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
+      messageStore.setMessageInf(
+        constant.INFO,
+        [message.INFO_UPDATE_COMPLETE],
+        []
+      );
     },
   },
 };

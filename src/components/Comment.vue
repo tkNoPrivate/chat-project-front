@@ -27,6 +27,7 @@
       ref="postTextArea"
       @signupMessage="signupComment"
       v-show="isActivePostTextArea"
+      :isError="errorFields.includes('comment')"
     />
   </div>
 </template>
@@ -35,6 +36,7 @@ import PostCard from "../components/PostCard";
 import PostTextArea from "../components/PostTextArea";
 import axiosInstance from "../axiosInterceptor";
 import userStore from "../store/user-store";
+import messageStore from "../store/message-store";
 
 export default {
   name: "Comment",
@@ -45,6 +47,9 @@ export default {
   computed: {
     loginUserId() {
       return userStore.state.userId;
+    },
+    errorFields() {
+      return messageStore.state.errorFields;
     },
   },
   data() {
@@ -96,6 +101,7 @@ export default {
 
       this.$emit("commentInfUpd");
       this.$refs.postTextArea.clearMessage();
+      messageStore.clearMessageInf();
       this.isActiveComment = true;
     },
     async updateComment(message, updDt, commentId, ref) {
@@ -111,6 +117,7 @@ export default {
         throw e;
       });
       this.$emit("commentInfUpd");
+      messageStore.clearMessageInf();
       this.$refs[ref][0].changeShowMessageEdit();
     },
     async deleteComment(contents, updDt, commentId) {

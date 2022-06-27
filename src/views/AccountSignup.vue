@@ -14,9 +14,6 @@ export default {
   components: {
     AccountForm,
   },
-  data() {
-    return {};
-  },
   methods: {
     async signup(userForm) {
       const params = new URLSearchParams();
@@ -26,8 +23,11 @@ export default {
       params.append("confirmPassword", userForm.confirmPassword);
       await axiosInstance.post("/user/signup", params);
       await this.$router.push("/login");
-      messageStore.setMessageInf(constant.INFO, [message.INFO_SIGNUP_COMPLETE]);
-      
+      messageStore.setMessageInf(
+        constant.INFO,
+        [message.INFO_SIGNUP_COMPLETE],
+        []
+      );
     },
   },
 };

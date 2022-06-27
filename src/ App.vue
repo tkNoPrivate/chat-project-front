@@ -41,7 +41,14 @@ export default {
   errorCaptured(err) {
     const status = err.response.status;
     if (status !== 404 && status !== 500) {
-      messageStore.setMessageInf(Constant.ERROR, err.response.data.messages);
+      const errorFields = err.response.data.fields
+        ? err.response.data.fields
+        : [];
+      messageStore.setMessageInf(
+        Constant.ERROR,
+        err.response.data.messages,
+        errorFields
+      );
     }
 
     return false;

@@ -50,7 +50,10 @@
       </v-row>
     </v-container>
     <v-footer fixed>
-      <PostTextArea ref="postTextArea" @signupMessage="signupPost"
+      <PostTextArea
+        ref="postTextArea"
+        @signupMessage="signupPost"
+        :isError="errorFields.includes('contents')"
     /></v-footer>
   </div>
 </template>
@@ -60,6 +63,7 @@ import Comment from "../components/Comment";
 import PostTextArea from "../components/PostTextArea";
 import axiosInstance from "../axiosInterceptor";
 import userStore from "../store/user-store";
+import messageStore from "../store/message-store";
 
 export default {
   name: "Post",
@@ -75,6 +79,9 @@ export default {
   computed: {
     loginUserId() {
       return userStore.state.userId;
+    },
+    errorFields() {
+      return messageStore.state.errorFields;
     },
   },
   components: {
@@ -119,6 +126,7 @@ export default {
       await axiosInstance.post("/post/signup", params);
       await this.reconfigurePosts();
       this.$refs.postTextArea.clearMessage();
+      messageStore.clearMessageInf();
       this.scrollToBottom();
     },
     async updatePost(message, updDt, postId, ref) {
@@ -135,6 +143,7 @@ export default {
       });
       await this.reconfigurePosts();
       this.$refs[ref][0].changeShowMessageEdit();
+      messageStore.clearMessageInf();
       this.scrollToBottom();
     },
     async deletePost(contents, updDt, postId) {
@@ -155,17 +164,25 @@ export default {
       const params = new FormData();
       params.append("userId", this.loginUserId);
       params.append("postId", postId);
-      await axiosInstance.post("/postlike/signup", params).finally(async () => {
-        await this.reconfigurePosts();
+      await axiosInstance.post("/postlike/signup", params).catch(async (e) => {
+        if (e.response.status === 409) {
+          await this.reconfigurePosts();
+        }
+        throw e;
       });
+      await this.reconfigurePosts();
     },
     async postLikeCountDown(postId) {
       const params = new FormData();
       params.append("userId", this.loginUserId);
       params.append("postId", postId);
-      await axiosInstance.post("/postlike/delete", params).finally(() => {
-        this.reconfigurePosts();
+      await axiosInstance.post("/postlike/delete", params).catch(async (e) => {
+        if (e.response.status === 409) {
+          await this.reconfigurePosts();
+        }
+        throw e;
       });
+      await this.reconfigurePosts();
     },
     async reconfigurePosts() {
       const resPosts = await axiosInstance.get(`/posts/${this.roomId}`);

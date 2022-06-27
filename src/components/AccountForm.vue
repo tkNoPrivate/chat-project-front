@@ -12,23 +12,27 @@
           placeholder="ユーザーIDを入力してください。"
           :readonly="isEdit"
           :hint="isEdit ? 'ユーザーIDは変更出来ません' : undefined"
+          :error="errorFields.includes('userId')"
         />
         <v-text-field
           prepend-icon="mdi-account-box"
           v-model="userForm.userName"
           label="ユーザ名"
           placeholder="ユーザー名を入力してください"
+          :error="errorFields.includes('userName')"
         />
         <div v-if="!isEdit">
           <PasswordTextField
             :password.sync="userForm.password"
             placeholder="パスワードを半角英数字記号で入力して下さい"
             label="パスワード"
+            :isError="errorFields.includes('password')"
           />
           <PasswordTextField
             :password.sync="userForm.confirmPassword"
             placeholder="上と同じパスワードを入力して下さい"
             label="確認用パスワード"
+            :isError="errorFields.includes('confirmPassword')"
           />
         </div>
         <v-dialog
@@ -81,6 +85,11 @@ export default {
     user: { type: Object, default: () => {}, require: false },
     isEdit: { type: Boolean, default: false, require: true },
     title: { type: String, default: "", require: true },
+  },
+  computed: {
+    errorFields() {
+      return messageStore.state.errorFields;
+    },
   },
   data() {
     return {

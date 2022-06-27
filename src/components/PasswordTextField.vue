@@ -8,15 +8,17 @@
     :value="password"
     :label="label"
     :placeholder="placeholder"
+    :error="isError"
   />
 </template>
 <script>
 export default {
   name: "PasswordTextField",
   props: {
-    password: { type: String, require: true},
-    label: { type: String, require: true},
-    placeholder: { type: String, require: true},
+    password: { type: String, defult: "", require: true },
+    label: { type: String, defult: "", require: true },
+    placeholder: { type: String, defult: "", require: true },
+    isError: { type: Boolean, default: false, require: true },
   },
   data() {
     return {
