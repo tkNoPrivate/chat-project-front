@@ -6,6 +6,16 @@
         @click="drawer = true"
       ></v-app-bar-nav-icon>
       <v-icon @click="back" v-if="isBack">mdi-arrow-left</v-icon>
+      <v-menu v-if="isJoinUsers" open-on-hover>
+        <template #activator="{ on }">
+          <v-chip class="ma-2" label v-on="on"> 参加ユーザー </v-chip>
+        </template>
+        <v-list>
+          <v-list-item v-for="val in joinUsers" :key="val.userId">
+            <v-list-item-title>{{ val.userName }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
       <v-spacer></v-spacer>
       <v-text-field
         v-if="isSearchTextField"
@@ -18,9 +28,9 @@
         solo
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-menu v-if="isVmenu">
+      <v-menu v-if="isVmenu" open-on-hover>
         <template #activator="{ on }">
-          <v-chip class="ma-2" active color="primary" label v-on="on">
+          <v-chip class="ma-2" color="primary" label v-on="on">
             <v-icon left> mdi-account-circle </v-icon>
             {{ userName }}
           </v-chip>
@@ -63,17 +73,15 @@ import userStore from "../store/user-store";
 
 export default {
   name: "Header",
-  props: {
-    // userName: { type: String, default: "", require: false },
-    // rooms: { type: Array, default: () => [], require: false },
-  },
   data() {
     return {
       isSearchTextField: false,
+      isJoinUsers: false,
       isVmenu: false,
       isBack: false,
       drawer: false,
       searchText: "",
+      joinUsers: [],
     };
   },
   computed: {
@@ -86,39 +94,36 @@ export default {
   },
   watch: {
     $route() {
-      this.isVmenu = this.changeShowVmenu();
-      this.isSearchTextField = this.changeShowSearchTextField();
-      this.isBack = this.changeShowBack();
-      this.searchText = "";
+      this.setDisplay();
+    },
+    rooms() {
+      if (this.rooms.length) {
+        this.joinUsers = this.rooms[0].joinUsers;
+      }
     },
   },
   mounted() {
-    this.isVmenu = this.changeShowVmenu();
-    this.isSearchTextField = this.changeShowSearchTextField();
-    this.isBack = this.changeShowBack();
-    this.searchText = "";
+    this.setDisplay();
   },
   methods: {
     back() {
       this.$router.push(this.$router.referrer.path);
     },
-    changeShowVmenu() {
+    setDisplay() {
       const currentPath = this.$route.path;
-      return (
+      this.isVmenu =
         currentPath !== "/" &&
         currentPath !== "/login" &&
-        currentPath !== "/account/signup"
-      );
-    },
-    changeShowBack() {
-      const currentPath = this.$route.path;
-      return currentPath !== "/" && !/^\/post/.test(currentPath);
-    },
-    changeShowSearchTextField() {
-      return /^\/post/.test(this.$route.path);
+        currentPath !== "/account/signup";
+      this.isBack = currentPath !== "/" && !/^\/post/.test(currentPath);
+      this.isSearchTextField = /^\/post/.test(currentPath);
+      this.isJoinUsers = /^\/post/.test(currentPath);
+      this.searchText = "";
     },
     changeRoom(roomId) {
       this.$router.push(`/post/${roomId}`).catch(() => {});
+      const room = this.rooms.find((r) => r.roomId === roomId);
+      this.joinUsers = room.joinUsers;
     },
     async search() {
       this.$emit("searchPost", this.searchText);
