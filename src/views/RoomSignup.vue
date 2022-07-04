@@ -44,11 +44,7 @@ export default {
         await axiosInstance.post("/joinroom/signup", params);
       }
       this.$refs.roomForm.clearForm();
-      messageStore.setMessageInf(
-        constant.INFO,
-        [message.INFO_SIGNUP_COMPLETE],
-        []
-      );
+      messageStore.setMessageInf(constant.INFO, [message.INFO_SIGNUP_COMPLETE]);
     },
   },
 };

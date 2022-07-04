@@ -7,7 +7,7 @@ const messageStore = Vue.observable({
     errorFields: [],
     isShowDialog: false,
   },
-  setMessageInf(type, messages, errorFields) {
+  setMessageInf(type, messages, errorFields = []) {
     this.state.type = type;
     this.state.messages = messages;
     this.state.errorFields = errorFields;

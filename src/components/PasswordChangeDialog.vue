@@ -76,11 +76,7 @@ export default {
       params.append("newPassword", this.newPassword);
       params.append("newConfirmPassword", this.newConfirmPassword);
       await axiosInstance.post("/user/password/update", params);
-      messageStore.setMessageInf(
-        constant.INFO,
-        [message.INFO_UPDATE_COMPLETE],
-        []
-      );
+      messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
     },
   },
 };

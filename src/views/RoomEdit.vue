@@ -50,11 +50,7 @@ export default {
       // 画面データの更新
       this.setRoom();
       userStore.setUserStore();
-      messageStore.setMessageInf(
-        constant.INFO,
-        [message.INFO_UPDATE_COMPLETE],
-        []
-      );
+      messageStore.setMessageInf(constant.INFO, [message.INFO_UPDATE_COMPLETE]);
     },
     async updateJoinRoom(selected) {
       // 参加部屋テーブルをクリア
